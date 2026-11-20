@@ -74,11 +74,10 @@ source ~/.bashrc
 
 Projects can live anywhere with a `go.mod` — no need for GOPATH/src.
 
-## Cross-compiling
+## Screenshots
 
-```sh
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o gvm-linux-amd64 .
-```
+<!-- TODO: add demo GIF -->
+![gvm demo](docs/demo.gif)
 
 ## License
 
