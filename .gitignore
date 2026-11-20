@@ -1,0 +1,17 @@
+# Binaries
+gvm
+gvm.exe
+*.exe
+
+# Build artifacts
+dist/
+
+# Go
+vendor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# gvm local data (not part of repo)
+.gvm/
