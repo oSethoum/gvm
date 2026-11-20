@@ -134,7 +134,7 @@ var installCmd = &cobra.Command{
 			p := tea.NewProgram(tui.NewDownloadModel())
 			go func() {
 				err := install.DownloadFile(url, cacheFile, func(d, t int64) {
-					p.Send(tui.DownloadProgressMsg{Downloaded: d, Total: t})
+					p.Send(tui.DownloadProgressMsg{Downloaded: d, Total: af.Size})
 				})
 				if err == nil {
 					err = install.VerifySHA256(cacheFile, af.SHA256)

@@ -74,12 +74,6 @@ source ~/.bashrc
 
 Projects can live anywhere with a `go.mod` — no need for GOPATH/src.
 
-## Screenshots
-
-![gvm menu](docs/1.png)
-![gvm install](docs/2.png)
-![gvm list](docs/3.png)
-
 ## License
 
 MIT
