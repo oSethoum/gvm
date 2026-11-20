@@ -76,8 +76,9 @@ Projects can live anywhere with a `go.mod` — no need for GOPATH/src.
 
 ## Screenshots
 
-<!-- TODO: add demo GIF -->
-![gvm demo](docs/demo.gif)
+![gvm menu](docs/1.png)
+![gvm install](docs/2.png)
+![gvm list](docs/3.png)
 
 ## License
 
