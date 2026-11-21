@@ -45,6 +45,7 @@ gvm env                # print env vars
 gvm init <shell>       # shell integration (powershell|bash|zsh|fish)
 gvm doctor             # diagnose setup
 gvm version            # print version
+gvm update             # update gvm to the latest release
 ```
 
 ## Shell integration
