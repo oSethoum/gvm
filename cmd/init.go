@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/huh"
 	"github.com/spf13/cobra"
 
 	"github.com/osethoum/gvm/internal/paths"
@@ -18,7 +19,19 @@ var initCmd = &cobra.Command{
 	Short: "Print shell integration snippet",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		sh := args[0]
+		sh := ""
+		if len(args) == 0 {
+			opts := []huh.Option[string]{}
+			for _, s := range []string{"powershell", "bash", "zsh", "fish"} {
+				opts = append(opts, huh.NewOption(s, s))
+			}
+			sel := huh.NewSelect[string]().Title("Select shell").Options(opts...).Value(&sh)
+			if err := huh.NewForm(huh.NewGroup(sel)).Run(); err != nil {
+				return err
+			}
+		} else {
+			sh = args[0]
+		}
 		fmt.Print(shell.Snippet(sh))
 		// ensure shims exist
 		paths.EnsureDirs()

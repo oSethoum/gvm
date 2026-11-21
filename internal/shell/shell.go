@@ -67,6 +67,7 @@ function gvm {
         $env:GOBIN = (& $gvmBin env 2>$null | Where-Object { $_ -match '^GOBIN=' }) -replace '^GOBIN=',''
         $env:GOMODCACHE = (& $gvmBin env 2>$null | Where-Object { $_ -match '^GOMODCACHE=' }) -replace '^GOMODCACHE=',''
         $env:GOTOOLCHAIN = "local"
+        $env:PATH = "$env:GOBIN;$env:GVM_ROOT\shims;" + $env:PATH
     }
 }
 `, root, shims)
