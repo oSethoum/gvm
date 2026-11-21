@@ -17,7 +17,7 @@ var initInstall bool
 var initCmd = &cobra.Command{
 	Use:   "init [shell]",
 	Short: "Print shell integration snippet",
-	Args:  cobra.ExactArgs(1),
+	Args:  cobra.MaximumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sh := ""
 		if len(args) == 0 {
