@@ -30,4 +30,13 @@ mkdir -p "$INSTALL_DIR"
 curl -sSL "$URL" | tar -xz -C "$INSTALL_DIR"
 
 echo "Installed to $INSTALL_DIR/gvm"
-echo "Add to PATH: export PATH=\"$INSTALL_DIR:\$PATH\""
+# Persist to shell rc
+RC="$HOME/.bashrc"
+case "$SHELL" in
+  *zsh) RC="$HOME/.zshrc" ;;
+esac
+if ! grep -q "$INSTALL_DIR" "$RC" 2>/dev/null; then
+  echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> "$RC"
+fi
+# Emit eval-able line for current shell
+echo "export PATH=\"$INSTALL_DIR:\$PATH\""
