@@ -36,7 +36,7 @@ case "$SHELL" in
   *zsh) RC="$HOME/.zshrc" ;;
 esac
 if ! grep -q "$INSTALL_DIR" "$RC" 2>/dev/null; then
-  echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> "$RC"
+  echo "export PATH=\"\$PATH:$INSTALL_DIR\"" >> "$RC"
 fi
 # Emit eval-able line for current shell
-echo "export PATH=\"$INSTALL_DIR:\$PATH\""
+echo "export PATH=\"\$PATH:$INSTALL_DIR\""

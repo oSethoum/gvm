@@ -16,13 +16,13 @@ Remove-Item $tmp
 
 # Refresh current session PATH
 if (-not ($env:PATH -split ';' | Where-Object { $_ -eq $installDir })) {
-    $env:PATH = "$installDir;" + $env:PATH
+    $env:PATH = $env:PATH + ";$installDir"
 }
 
 # Persist to user PATH
 $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
 if (-not ($userPath -split ';' | Where-Object { $_ -eq $installDir })) {
-    $newPath = if ($userPath) { "$installDir;$userPath" } else { $installDir }
+    $newPath = if ($userPath) { "$userPath;$installDir" } else { $installDir }
     [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
 }
 
