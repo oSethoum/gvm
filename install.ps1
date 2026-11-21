@@ -6,7 +6,6 @@ New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 $release = Invoke-RestMethod "https://api.github.com/repos/$repo/releases/latest"
 $tag = $release.tag_name
 $arch = if ([Environment]::Is64BitOperatingSystem) { "amd64" } else { "386" }
-# prefer arm64 if needed
 $asset = $release.assets | Where-Object { $_.name -match "windows_${arch}\.zip" } | Select-Object -First 1
 if (-not $asset) { throw "No asset found for windows/$arch" }
 
@@ -15,5 +14,17 @@ Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $tmp
 Expand-Archive -Path $tmp -DestinationPath $installDir -Force
 Remove-Item $tmp
 
-Write-Host "Installed to $installDir\gvm.exe"
-Write-Host "Add to PATH: `$env:PATH = '$installDir;' + `$env:PATH"
+# Refresh current session PATH
+if (-not ($env:PATH -split ';' | Where-Object { $_ -eq $installDir })) {
+    $env:PATH = "$installDir;" + $env:PATH
+}
+
+# Persist to user PATH
+$userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+if (-not ($userPath -split ';' | Where-Object { $_ -eq $installDir })) {
+    $newPath = if ($userPath) { "$installDir;$userPath" } else { $installDir }
+    [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
+}
+
+Write-Host "Installed gvm $tag to $installDir\gvm.exe"
+Write-Host "gvm is ready in this terminal. For other terminals, restart or run: `$env:PATH = '$installDir;' + `$env:PATH"

@@ -27,12 +27,19 @@ var doctorCmd = &cobra.Command{
 		}
 		v := shim.ActiveVersion()
 		if v != "" {
+			gobin := paths.GopathDir(v) + string(os.PathSeparator) + "bin"
+			if !strings.Contains(pathEnv, gobin) {
+				fmt.Println("HINT: GOBIN not on PATH; run 'gvm init <shell>' or add manually")
+			} else {
+				fmt.Println("OK: GOBIN on PATH")
+			}
 			if _, err := os.Stat(paths.VersionDir(v)); err != nil {
 				fmt.Println("ERROR: active version dir missing")
 			} else {
 				fmt.Println("OK: active version installed")
 			}
 		}
+		fmt.Println("Refresh current shell: gvm init <shell>  (then source profile), or eval 'gvm env'")
 	},
 }
 
