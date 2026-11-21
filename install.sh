@@ -30,6 +30,21 @@ mkdir -p "$INSTALL_DIR"
 curl -sSL "$URL" | tar -xz -C "$INSTALL_DIR"
 
 echo "Installed to $INSTALL_DIR/gvm"
+
+# Ensure gvm bin dir is on PATH for this shell
+case ":${PATH}:" in
+  *":${INSTALL_DIR}:"*) ;;
+  *) PATH="${PATH}:${INSTALL_DIR}"; export PATH ;;
+esac
+
+# Ensure GOBIN is on PATH for this shell (when set)
+if [ -n "${GOBIN:-}" ]; then
+  case ":${PATH}:" in
+    *":${GOBIN}:"*) ;;
+    *) PATH="${PATH}:${GOBIN}"; export PATH ;;
+  esac
+fi
+
 # Persist to shell rc
 RC="$HOME/.bashrc"
 case "$SHELL" in
@@ -38,5 +53,16 @@ esac
 if ! grep -q "$INSTALL_DIR" "$RC" 2>/dev/null; then
   echo "export PATH=\"\$PATH:$INSTALL_DIR\"" >> "$RC"
 fi
-# Emit eval-able line for current shell
+if [ -n "${GOBIN:-}" ] && ! grep -qF "${GOBIN}" "$RC" 2>/dev/null; then
+  echo "export PATH=\"\$PATH:${GOBIN}\"" >> "$RC"
+fi
+if ! grep -q 'GOBIN' "$RC" 2>/dev/null; then
+  echo 'export PATH="$PATH:$GOBIN"' >> "$RC"
+fi
+
+# Emit eval-able lines for current shell
 echo "export PATH=\"\$PATH:$INSTALL_DIR\""
+if [ -n "${GOBIN:-}" ]; then
+  echo "export PATH=\"\$PATH:${GOBIN}\""
+fi
+echo 'export PATH="$PATH:$GOBIN"'

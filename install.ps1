@@ -18,12 +18,30 @@ Remove-Item $tmp
 if (-not ($env:PATH -split ';' | Where-Object { $_ -eq $installDir })) {
     $env:PATH = $env:PATH + ";$installDir"
 }
+if ($env:GOBIN -and -not ($env:PATH -split ';' | Where-Object { $_ -eq $env:GOBIN })) {
+    $env:PATH = $env:PATH + ";$env:GOBIN"
+}
+if (-not ($env:PATH -split ';' | Where-Object { $_ -eq '%GOBIN%' })) {
+    $env:PATH = $env:PATH + ";%GOBIN%"
+}
 
 # Persist to user PATH
 $userPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+if (-not $userPath) { $userPath = "" }
 if (-not ($userPath -split ';' | Where-Object { $_ -eq $installDir })) {
     $newPath = if ($userPath) { "$userPath;$installDir" } else { $installDir }
     [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
+    $userPath = $newPath
+}
+if ($env:GOBIN -and -not ($userPath -split ';' | Where-Object { $_ -eq $env:GOBIN })) {
+    $newPath = if ($userPath) { "$userPath;$env:GOBIN" } else { $env:GOBIN }
+    [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
+    $userPath = $newPath
+}
+if (-not ($userPath -split ';' | Where-Object { $_ -eq '%GOBIN%' })) {
+    $newPath = if ($userPath) { "$userPath;%GOBIN%" } else { "%GOBIN%" }
+    [Environment]::SetEnvironmentVariable("PATH", $newPath, "User")
+    $userPath = $newPath
 }
 
 Write-Host "Installed gvm $tag to $installDir\gvm.exe"
