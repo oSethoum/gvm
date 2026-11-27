@@ -30,6 +30,7 @@ func newMenuModel() menuModel {
 		menuItem{"current", "Show active version"},
 		menuItem{"available", "List available versions (remote)"},
 		menuItem{"env", "Print environment variables"},
+		menuItem{"move", "Move gvm to a new directory"},
 		menuItem{"init", "Shell integration snippet"},
 		menuItem{"doctor", "Diagnose setup"},
 		menuItem{"quit", "Exit"},

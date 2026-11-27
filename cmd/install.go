@@ -150,12 +150,10 @@ var installCmd = &cobra.Command{
 				return dm.Err
 			}
 		} else {
-			err := install.DownloadFile(url, cacheFile, func(d, t int64) {
-				if t > 0 {
-					fmt.Printf("\rDownloading... %d%%", int(100*d/t))
-				}
+			err := install.DownloadFile(url, cacheFile, func(_, _ int64) {
+				fmt.Fprint(os.Stderr, "\rDownloading...")
 			})
-			fmt.Println()
+			fmt.Fprintln(os.Stderr)
 			if err != nil {
 				return err
 			}

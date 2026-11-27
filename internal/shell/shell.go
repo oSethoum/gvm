@@ -30,24 +30,44 @@ func ApplyEnv(v string) error {
 		"GOTOOLCHAIN": "local",
 	}
 	for k, val := range pairs {
-		cmd := exec.Command("powershell", "-NoProfile", "-Command",
-			fmt.Sprintf("[Environment]::SetEnvironmentVariable('%s','%s','User')", k, val))
-		_ = cmd.Run()
+		setUserEnv(k, val)
 	}
 	// ensure shims on user PATH
-	out, _ := exec.Command("powershell", "-NoProfile", "-Command",
-		"[Environment]::GetEnvironmentVariable('PATH','User')").Output()
-	cur := strings.TrimSpace(string(out))
-	if !strings.Contains(cur, shims) {
+	cur := UserEnv("PATH")
+	if !pathListContains(cur, shims, ';') {
 		newPath := shims
 		if cur != "" {
 			newPath = shims + ";" + cur
 		}
-		cmd := exec.Command("powershell", "-NoProfile", "-Command",
-			fmt.Sprintf("[Environment]::SetEnvironmentVariable('PATH','%s','User')", newPath))
-		_ = cmd.Run()
+		setUserEnv("PATH", newPath)
 	}
 	return nil
+}
+
+func psQuote(s string) string {
+	return "'" + strings.ReplaceAll(s, "'", "''") + "'"
+}
+
+func setUserEnv(key, value string) {
+	cmd := exec.Command("powershell", "-NoProfile", "-Command",
+		fmt.Sprintf("[Environment]::SetEnvironmentVariable(%s,%s,'User')", psQuote(key), psQuote(value)))
+	_ = cmd.Run()
+}
+
+// UserEnv reads a user-scope environment variable on Windows.
+func UserEnv(key string) string {
+	out, _ := exec.Command("powershell", "-NoProfile", "-Command",
+		fmt.Sprintf("[Environment]::GetEnvironmentVariable(%s,'User')", psQuote(key))).Output()
+	return strings.TrimSpace(string(out))
+}
+
+func pathListContains(list, entry string, sep rune) bool {
+	for _, part := range strings.Split(list, string(sep)) {
+		if strings.EqualFold(strings.TrimSpace(strings.Trim(part, `"'`)), entry) {
+			return true
+		}
+	}
+	return false
 }
 
 func Snippet(sh string) string {
